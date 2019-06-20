@@ -33,8 +33,10 @@ if [ "${npmInstall}" = 1 ] ; then
     ssh -t ${usrName}@${ip} "cd ${appDistDir} && npm install --production" > /dev/null 2>&1
 fi
 
-echo -e "${gray}♨ Restarting PM2 processes with pm2.yml${nc}"
-ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=app -- --env=${env}"
+if [ "${pm2}" = 1 ] ; then
+    echo -e "${gray}♨ Restarting PM2 processes with pm2.yml${nc}"
+    ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=app -- --env=${env}"
+fi
 
 if [ ! -z "${postDeploy}" ]
 then

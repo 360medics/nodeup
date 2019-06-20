@@ -6,6 +6,7 @@ domain=
 appDir=
 usrName=
 usrPwd=
+pm2=1
 npmInstall=1
 aptUpgrade=1
 excludeDirs=
@@ -45,12 +46,16 @@ case $i in
     domain="${i#*=}"
     shift
     ;;
+    -p2=*|--pm2=*)
+    pm2="${i#*=}"
+    shift
+    ;;
     -a=*|--appdir=*)
     appDir="${i#*=}"
     shift
     ;;
-    -s|--skip-npm-install)
-    npmInstall=0
+    -s=*|--skip-npm-install=*)
+    npmInstall="${i#*=}"
     shift
     ;;
     -u=*|--upgrade=*)
@@ -70,7 +75,7 @@ then
     read ip
 fi
 
-if [ -z "$domain" ]
+if [ -z "$domain" ] || [ "$domain" != "0" ]
 then
     echo -e "${cyan}⌶ Enter domain name (for https):${nc}"
     read domain
@@ -93,12 +98,3 @@ then
     echo -e "${cyan}⌶ Enter user password (${usrPwd}):${nc}"
     read appDir
 fi
-
-#ping domain otherwise certbot wont work
-# if curl -s "$domain" >/dev/null
-# then
-#     echo -e "${green}✗ Domain $domain Ok.${nc}"
-# else
-#     echo -e "${red}✗ Domain $domain is offline.${nc}"
-#     exit 2
-# fi
