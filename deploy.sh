@@ -10,6 +10,12 @@ set -o nounset
 env="$1"
 appDistDir=${remoteDir}/${appDir}
 
+if [ ! -d "${distDir}" ]
+then
+    echo -e "${red}✗ Build dir does not exist at ${distDir}${nc}"
+    exit 1
+fi
+
 # do a full build (public build BEFORE server build)
 # echo -e "${gray}♨ Building app for production (npm run build)${nc}"
 # npm run build > /dev/null 2>&1
@@ -23,16 +29,17 @@ ssh -t ${usrName}@${ip} "test -d ${appDistDir} || mkdir -p ${appDistDir}" > /dev
 echo -e "${green}✔ Ok.${nc}"
 
 echo -e "${gray}♨ Uploading files${nc}"
-echo -e "${gray}♨ Excuding ${excludeDirs}${nc}"
+echo -e "${gray}♨ Excluding ${excludeDirs}${nc}"
 rsync -avzP --no-perms --no-owner --no-group --delete --exclude node_modules/ ${excludeDirs} ${distDir}/* ${usrName}@${ip}:${appDistDir} > /dev/null 2>&1
 
 # Info: if "cb() never called" error encountered
 # http://www.alex-arriaga.com/issue-when-running-npm-install-npm-err-cb-never-called-solved/
 if [ "${npmInstall}" = 1 ] ; then
     echo -e "${gray}♨ Running npm install${nc}"
-    ssh -t ${usrName}@${ip} "cd ${appDistDir} && npm install --production" > /dev/null 2>&1
+    ssh -t ${usrName}@${ip} "cd ${appDistDir} && npm install --production"
 fi
 
+#echo $pm2
 if [ "${pm2}" = 1 ] ; then
     echo -e "${gray}♨ Restarting PM2 processes with pm2.yml${nc}"
     ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=app -- --env=${env}"

@@ -75,7 +75,7 @@ then
     read ip
 fi
 
-if [ -z "$domain" ] || [ "$domain" != "0" ]
+if [ -z "$domain" ] && [ "$domain" != "0" ]
 then
     echo -e "${cyan}⌶ Enter domain name (for https):${nc}"
     read domain

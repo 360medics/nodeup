@@ -25,7 +25,7 @@ if [ -z "${2:-}" ]
 then
     echo -e "${red}✗ 2nd argument (environment)'nodeup <command> <ENV>' is required${nc}"
     echo -e $help
-    exit 2
+    exit 3
 fi
 
 env="$2"
