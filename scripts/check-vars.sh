@@ -11,6 +11,8 @@ npmInstall=1
 aptUpgrade=1
 excludeDirs=
 postDeploy=
+pm2clusters=1
+pm2appname="app"
 
 if [[ -f "$execDir/.nodeup.cnf" ]]
 then

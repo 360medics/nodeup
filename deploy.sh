@@ -18,14 +18,14 @@ fi
 
 # do a full build (public build BEFORE server build)
 # echo -e "${gray}♨ Building app for production (npm run build)${nc}"
-# npm run build > /dev/null 2>&1
+# npm run build
 #cp ./pm2.yml ./dist/pm2.yml
 #cp ./package.json ./dist/package.json
 #cp ./package-lock.json ./dist/package-lock.json
 
 # create remote directory if it does not exist
 echo -e "${gray}♨ Checking remote project directories${nc}"
-ssh -t ${usrName}@${ip} "test -d ${appDistDir} || mkdir -p ${appDistDir}" > /dev/null 2>&1
+ssh -t ${usrName}@${ip} "test -d ${appDistDir} || mkdir -p ${appDistDir}"
 echo -e "${green}✔ Ok.${nc}"
 
 echo -e "${gray}♨ Uploading files${nc}"
@@ -42,7 +42,7 @@ fi
 #echo $pm2
 if [ "${pm2}" = 1 ] ; then
     echo -e "${gray}♨ Restarting PM2 processes with pm2.yml${nc}"
-    ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=app -- --env=${env}"
+    ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=${pm2appname} -- --env=${env}"
 fi
 
 if [ ! -z "${postDeploy}" ]
