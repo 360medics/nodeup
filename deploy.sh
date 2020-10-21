@@ -41,8 +41,9 @@ fi
 
 #echo $pm2
 if [ "${pm2}" = 1 ] ; then
+    echo "${pm2clusters}"
     echo -e "${gray}♨ Restarting PM2 processes with pm2.yml${nc}"
-    ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=${pm2appname} -- --env=${env}"
+    ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=${pm2appname} -i ${pm2clusters} -- --env=${env}"
 fi
 
 if [ ! -z "${postDeploy}" ]
