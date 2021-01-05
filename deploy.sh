@@ -41,9 +41,20 @@ fi
 
 #echo $pm2
 if [ "${pm2}" = 1 ] ; then
-    echo "${pm2clusters}"
-    echo -e "${gray}♨ Restarting PM2 processes with pm2.yml${nc}"
-    ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=${pm2appname} -i ${pm2clusters} -- --env=${env}"
+
+    # check if pm2.ENV.yml file exists in remote project, if not, start pm2 process with defaults basic arguments
+    REMOTE_PM2_FILE="${appDistDir}/pm2.${env}.yml"
+    
+    if ssh -t ${usrName}@${ip} "test -e ${REMOTE_PM2_FILE}"
+    then
+        # use pm2 yml as pm2 configuration
+        echo -e "${gray}♨ Restarting PM2 processes (with ${REMOTE_PM2_FILE})${nc}"
+        ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start ${REMOTE_PM2_FILE}"
+    else
+        # use pm2 yml as pm2 configuration
+        echo -e "${gray}♨ Restarting PM2 processes (default options)${nc}"
+        ssh -t ${usrName}@${ip} "cd ${appDistDir} && pm2 kill && pm2 start index.js --name=${pm2appname} -i ${pm2clusters} -- --env=${env}"
+    fi
 fi
 
 if [ ! -z "${postDeploy}" ]
