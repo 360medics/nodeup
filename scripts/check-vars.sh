@@ -60,6 +60,10 @@ case $i in
     npmInstall="${i#*=}"
     shift
     ;;
+    -c=*|--pm2clusters=*)
+    pm2clusters="${i#*=}"
+    shift
+    ;;
     -u=*|--upgrade=*)
     aptUpgrade="${i#*=}"
     shift
